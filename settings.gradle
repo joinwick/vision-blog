@@ -1,0 +1,6 @@
+rootProject.name = 'vision-blog'
+// 子模块 web
+include 'web'
+// 子模块 core
+include 'core'
+

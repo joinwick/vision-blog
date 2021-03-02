@@ -1,0 +1,106 @@
+/**
+ * 声明 gradle脚本自身需要使用的资源。可以声明的资源包括依赖项、第三方插件、maven仓库地址等。
+ * gradle是由groovy语言编写的，支持groovy语法，可以灵活的使用已有的各种ant插件、基于jvm的类库，
+ * 这也是它比maven、 ant等构建脚本强大的原因。虽然gradle支持开箱即用，但是如果你想在脚本中使用一些第三方的插件、类库等，
+ * 就需要自己手动添加对这些插件、类库的 引用。而这些插件、类库又不是直接服务于项目的，而是支持其它build脚本的运行。
+ * 所以你应当将这部分的引用放置在buildscript代码块中。 gradle在执行脚本时，会优先执行buildscript代码块中的内容，
+ * 然后才会执行剩余的build脚本。
+ */
+buildscript {
+    // 此处声明是gradle脚本自身需要使用的资源, 可以声明的资源包括依赖项、第三方插件、maven仓库地址
+    repositories {
+        mavenLocal()
+        maven {
+            url "http://maven.aliyun.com/nexus/content/groups/public/"
+        }
+        mavenCentral()
+    }
+
+    ext {
+        springBootVersion = '2.4.2'
+    }
+
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion")
+    }
+}
+
+// 针对所有project的配置，包含根项目，除此之外还有 subprojects 和 project
+allprojects {
+    group 'com.vision'
+    // 版本信息
+    version '1.0-SNAPSHOT'
+    // java项目
+    apply plugin: 'java'
+    // idea项目
+    apply plugin: 'idea'
+//    //引入spring 依赖管理插件
+//    apply plugin: 'io.spring.dependency-management'
+//    //引入 spring boot 插件
+//    apply plugin: 'org.springframework.boot'
+
+    //指定编译编译.java文件的jdk版本
+    sourceCompatibility = 1.8
+    //确保class文件与targetCompatibility指定版本或者更新的java虚拟机兼容
+    targetCompatibility = 1.8
+    //指定gradle编译时,针对java文件使用 UTF-8 编码
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+    }
+    tasks.withType(Javadoc) {
+        options.encoding = 'UTF-8'
+    }
+    tasks.withType(Test) {
+        systemProperty "file.encoding", "UTF-8"
+    }
+
+    // 此处声明的依赖项、仓库地址等信息是项目自身需要的资源
+    repositories {
+        mavenLocal()
+        maven {
+            url "http://maven.aliyun.com/nexus/content/groups/public/"
+        }
+        mavenCentral()
+    }
+
+    // 定义全局变量管理版本
+    ext {
+        springBootVersion = '2.4.2'
+        slf4jVersion = '1.7.30'
+        log4j2Version = '2.13.3'
+        commonsVesion = '3.0'
+        guavaVersion = '23.0'
+        mysqlVersion = '8.0.16'
+        mybatisVersion = '3.5.6'
+        junitVersion = '4.12'
+    }
+
+    // 项目中所使用到的依赖，这里添加的依赖会被所有项目，包括root项目继承
+    dependencies {
+        compile("org.slf4j:slf4j-api:$slf4jVersion")
+        compile("org.apache.logging.log4j:log4j-core:$log4j2Version")
+        compile("org.apache.logging.log4j:log4j-api:$log4j2Version")
+        compile("org.apache.logging.log4j:log4j-slf4j-impl:$log4j2Version")
+        compile("com.google.guava:guava:$guavaVersion")
+        compile("mysql:mysql-connector-java:$mysqlVersion")
+        compile("org.mybatis:mybatis:$mybatisVersion")
+
+        compile("org.springframework.boot:spring-boot-starter:$springBootVersion")
+                {
+                    exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+                }
+        compile("org.springframework.boot:spring-boot-starter-web:$springBootVersion")
+                {
+                    exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+                }
+        compile("org.springframework.boot:spring-boot-starter-thymeleaf:$springBootVersion")
+                {
+                    exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+                }
+        compile("junit:junit:$junitVersion")
+    }
+}
+
+//test {
+//    useJUnitPlatform()
+//}

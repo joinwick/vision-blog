@@ -1,0 +1,22 @@
+apply plugin: 'application'
+//声明spring-boot插件
+apply plugin: 'org.springframework.boot'
+//启动项
+mainClassName = "com.vision.web.StartServer"
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter")
+            {
+                exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+            }
+    compile("org.springframework.boot:spring-boot-starter-web")
+            {
+                exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+            }
+    compile("org.springframework.boot:spring-boot-starter-thymeleaf")
+            {
+                exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+            }
+    //依赖子项目
+    compile project(":core")
+}
