@@ -23,7 +23,7 @@ public class DemoController {
     public DemoEntity test() {
         LOGGER.info("用户访问 test api");
         DemoEntity demoEntity = new DemoEntity();
-        demoEntity.setName("小明");
+        demoEntity.setName("小强");
         demoEntity.setAge(24);
         return demoEntity;
     }
